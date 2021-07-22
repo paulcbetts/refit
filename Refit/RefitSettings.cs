@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Net.Http;
@@ -7,11 +8,13 @@ using System.Reflection;
 using System.Runtime.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
+using Refit.Extensions.Exceptions;
+using Refit.Extensions.Properties;
 
 namespace Refit
 {
     public class RefitSettings
-    {       
+    {
 
         /// <summary>
         /// Creates a new <see cref="RefitSettings"/> instance with the default parameters
@@ -22,6 +25,7 @@ namespace Refit
             UrlParameterFormatter = new DefaultUrlParameterFormatter();
             FormUrlEncodedParameterFormatter = new DefaultFormUrlEncodedParameterFormatter();
             ExceptionFactory = new DefaultApiExceptionFactory(this).CreateAsync;
+            PropertyProviders = PropertyProviderFactory.WithDefaultPropertyProviders();
         }
 
         /// <summary>
@@ -39,6 +43,7 @@ namespace Refit
             UrlParameterFormatter = urlParameterFormatter ?? new DefaultUrlParameterFormatter();
             FormUrlEncodedParameterFormatter = formUrlEncodedParameterFormatter ?? new DefaultFormUrlEncodedParameterFormatter();
             ExceptionFactory = new DefaultApiExceptionFactory(this).CreateAsync;
+            PropertyProviders = PropertyProviderFactory.WithDefaultPropertyProviders();
         }
 
         /// <summary>
@@ -61,6 +66,12 @@ namespace Refit
         /// If function returns null - no exception is thrown.
         /// </summary>
         public Func<HttpResponseMessage, Task<Exception?>> ExceptionFactory { get; set; }
+
+        /// <summary>
+        /// Supply a function to provide a <see cref="IDictionary{TKey,TValue}"/> of properties to store in HttpRequestMessage.Properties/Options
+        /// based on the <see cref="MethodInfo"/> of the request and the <see cref="Type"/> of the Refit target interface
+        /// </summary>
+        public List<PropertyProvider>? PropertyProviders { get; set; }
 
         public IHttpContentSerializer ContentSerializer { get; set; }
         public IUrlParameterFormatter UrlParameterFormatter { get; set; }
@@ -152,38 +163,6 @@ namespace Refit
                                      ? "{0}"
                                      : $"{{0:{formatString}}}",
                                  enummember?.Value ?? parameterValue);
-        }
-    }
-
-    public class DefaultApiExceptionFactory
-    {
-        static readonly Task<Exception?> NullTask = Task.FromResult<Exception?>(null);
-
-        readonly RefitSettings refitSettings;
-
-        public DefaultApiExceptionFactory(RefitSettings refitSettings)
-        {
-            this.refitSettings = refitSettings;
-        }
-
-        public Task<Exception?> CreateAsync(HttpResponseMessage responseMessage)
-        {
-            if (!responseMessage.IsSuccessStatusCode)
-            {
-                return CreateExceptionAsync(responseMessage, refitSettings)!;
-            }
-            else
-            {
-                return NullTask;
-            }
-        }
-
-        static async Task<Exception> CreateExceptionAsync(HttpResponseMessage responseMessage, RefitSettings refitSettings)
-        {
-            var requestMessage = responseMessage.RequestMessage!;
-            var method = requestMessage.Method;
-
-            return await ApiException.Create(requestMessage, method, responseMessage, refitSettings).ConfigureAwait(false);
         }
     }
 }

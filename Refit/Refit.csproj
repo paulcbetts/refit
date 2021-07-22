@@ -26,10 +26,7 @@
     <!-- We need this one to catch older clients -->
     <None Include="targets\refit.targets" PackagePath="build\netstandard2.0" Pack="true" />
     
-    <None Include="..\InterfaceStubGenerator.Core\bin\$(Configuration)\netstandard2.0\InterfaceStubGenerator.Core.dll"
-          PackagePath="analyzers\cs\"
-          Pack="true"
-          Visible="false" />
+    <None Include="..\InterfaceStubGenerator.Core\bin\$(Configuration)\netstandard2.0\InterfaceStubGenerator.Core.dll" PackagePath="analyzers\cs\" Pack="true" Visible="false" />
   </ItemGroup>
 
 </Project>

@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <Import Project="..\Refit\targets\refit.props"/>
+  <Import Project="..\Refit\targets\refit.props" />
   
   <PropertyGroup>
     <TargetFrameworks>net5.0;netcoreapp2.1;netcoreapp3.1;net461</TargetFrameworks>
@@ -22,13 +22,12 @@
     <PackageReference Include="RichardSzalay.MockHttp" Version="6.0.0" />
     <ProjectReference Include="..\Refit.HttpClientFactory\Refit.HttpClientFactory.csproj" />
     <ProjectReference Include="..\Refit.Newtonsoft.Json\Refit.Newtonsoft.Json.csproj" />
-    <ProjectReference Include="..\InterfaceStubGenerator.Core\InterfaceStubGenerator.Core.csproj"
-                            OutputItemType="Analyzer" ReferenceOutputAssembly="true" />
+    <ProjectReference Include="..\InterfaceStubGenerator.Core\InterfaceStubGenerator.Core.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="true" />
   </ItemGroup>
 
   <ItemGroup Condition="'$(TargetFramework)' == 'net461' ">
     <Reference Include="System.Net.Http" />
   </ItemGroup>
 
-  <Import Project="..\Refit\targets\refit.targets"/>
+  <Import Project="..\Refit\targets\refit.targets" />
 </Project>

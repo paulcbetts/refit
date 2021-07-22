@@ -724,6 +724,28 @@ namespace Refit
                     }
                 }
 
+                var propertyProviders = restMethod.RefitSettings.PropertyProviders;
+
+                if (propertyProviders != null)
+                {
+                    foreach (var propertyProvider in propertyProviders)
+                    {
+                        try
+                        {
+                            propertyProvider.ProvideProperties(propertiesToAdd, restMethod.MethodInfo, TargetType);
+                        }
+                        catch(Exception e)
+                        {
+                            /*don't let the request blow up if a custom property provider throws an exception
+                             but give the developer a way to know what went wrong
+                             */
+
+                            //make this a list I guess...
+                            propertiesToAdd[HttpRequestMessageOptions.PropertyProviderException] = e;
+                        }
+                    }
+                }
+
                 foreach (var property in propertiesToAdd)
                 {
 #if NET5_0_OR_GREATER
@@ -732,15 +754,6 @@ namespace Refit
                     ret.Properties[property.Key] = property.Value;
 #endif
                 }
-
-                // Always add the top-level type of the interface to the properties
-#if NET5_0_OR_GREATER
-                ret.Options.Set(new HttpRequestOptionsKey<Type>(HttpRequestMessageOptions.InterfaceType), TargetType);
-#else
-                ret.Properties[HttpRequestMessageOptions.InterfaceType] = TargetType;
-#endif
-
-                ;
 
                 // NB: The URI methods in .NET are dumb. Also, we do this
                 // UriBuilder business so that we preserve any hardcoded query

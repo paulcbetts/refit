@@ -3,13 +3,11 @@ using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 
-using Refit; // for the code gen
-
 using RichardSzalay.MockHttp;
 
-using Xunit;
+using Xunit; // for the code gen
 
-namespace Refit.Tests
+namespace Refit.Tests.Extensions.Exceptions
 {
     public class ExceptionFactoryTests
     {

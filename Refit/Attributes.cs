@@ -3,7 +3,15 @@ using System.Net.Http;
 
 namespace Refit
 {
-    public abstract class HttpMethodAttribute : Attribute
+    /// <summary>
+    /// This is a marker attribute used internally by Refit
+    /// </summary>
+    public class RefitAttribute : Attribute
+    {
+
+    }
+
+    public abstract class HttpMethodAttribute : RefitAttribute
     {
         public HttpMethodAttribute(string path)
         {
@@ -97,7 +105,7 @@ namespace Refit
     }
 
     [AttributeUsage(AttributeTargets.Method)]
-    public class MultipartAttribute : Attribute
+    public class MultipartAttribute : RefitAttribute
     {
         public string BoundaryText { get; private set; }
 
@@ -133,7 +141,7 @@ namespace Refit
     }
 
     [AttributeUsage(AttributeTargets.Parameter)]
-    public class BodyAttribute : Attribute
+    public class BodyAttribute : RefitAttribute
     {
         public BodyAttribute()
         {
@@ -162,7 +170,7 @@ namespace Refit
     }
 
     [AttributeUsage(AttributeTargets.Parameter | AttributeTargets.Property)]
-    public class AliasAsAttribute : Attribute
+    public class AliasAsAttribute : RefitAttribute
     {
         public AliasAsAttribute(string name)
         {
@@ -174,7 +182,7 @@ namespace Refit
 
     [AttributeUsage(AttributeTargets.Parameter | AttributeTargets.Property)]
     [Obsolete("Use Refit.StreamPart, Refit.ByteArrayPart, Refit.FileInfoPart or if necessary, inherit from Refit.MultipartItem", false)]
-    public class AttachmentNameAttribute : Attribute
+    public class AttachmentNameAttribute : RefitAttribute
     {
         public AttachmentNameAttribute(string name)
         {
@@ -188,13 +196,13 @@ namespace Refit
     /// Allows you provide a Dictionary of headers to be added to the request.
     /// </summary>
     [AttributeUsage(AttributeTargets.Parameter)]
-    public class HeaderCollectionAttribute : Attribute
+    public class HeaderCollectionAttribute : RefitAttribute
     {
 
     }
 
     [AttributeUsage(AttributeTargets.Interface | AttributeTargets.Method)]
-    public class HeadersAttribute : Attribute
+    public class HeadersAttribute : RefitAttribute
     {
         public HeadersAttribute(params string[] headers)
         {
@@ -205,7 +213,7 @@ namespace Refit
     }
 
     [AttributeUsage(AttributeTargets.Parameter)]
-    public class HeaderAttribute : Attribute
+    public class HeaderAttribute : RefitAttribute
     {
         public HeaderAttribute(string header)
         {
@@ -221,7 +229,7 @@ namespace Refit
     /// If no key is specified then the key will be defaulted to the name of the parameter.
     /// </summary>
     [AttributeUsage(AttributeTargets.Parameter)]
-    public class PropertyAttribute : Attribute
+    public class PropertyAttribute : RefitAttribute
     {
         public PropertyAttribute() { }
 
@@ -237,7 +245,7 @@ namespace Refit
     }
 
     [AttributeUsage(AttributeTargets.Parameter)]
-    public class AuthorizeAttribute : Attribute
+    public class AuthorizeAttribute : RefitAttribute
     {
         public AuthorizeAttribute(string scheme = "Bearer")
         {
@@ -249,7 +257,7 @@ namespace Refit
 
     [AttributeUsage(AttributeTargets.Parameter | AttributeTargets.Property)] // Property is to allow for form url encoded data
 
-    public class QueryAttribute : Attribute
+    public class QueryAttribute : RefitAttribute
     {
         CollectionFormat? collectionFormat;
 
@@ -333,7 +341,7 @@ namespace Refit
 
     [AttributeUsage(AttributeTargets.Method)]
 
-    public class QueryUriFormatAttribute : Attribute
+    public class QueryUriFormatAttribute : RefitAttribute
     {
         public QueryUriFormatAttribute(UriFormat uriFormat)
         {
